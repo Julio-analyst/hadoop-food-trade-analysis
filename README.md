@@ -1,158 +1,165 @@
-# Implementasi Ekosistem Hadoop untuk Analisis Perdagangan Internasional Bahan Pangan (2024)
+# 📁 Implementasi Ekosistem Hadoop untuk Analisis Perdagangan Internasional Bahan Pangan (2024)
 
-## 📌 Deskripsi Proyek
-
-Proyek ini bertujuan membangun sistem big data berbasis Hadoop untuk menganalisis data impor bahan pangan Indonesia dari berbagai negara, menggunakan pendekatan batch processing dan arsitektur Medallion (Bronze, Silver, Gold). Sistem dirancang untuk memproses dataset besar dari UN Comtrade dan FAOSTAT, dengan pipeline data yang mencakup ingestion, transformasi, agregasi, dan visualisasi.
-
-## 🧑‍💻 Tim Pengembang
-
-Kelompok 13 - Institut Teknologi Sumatera (Program Studi Sains Data)
-
-- Rangga Adi Putra (121450106)
-- Cyntia Kristina Sidauruk (122450023)
-- Azizah Kusumah Putri (122450068)
-- Farrel Julio Akbar (122450110)
+> 🚀 Big data pipeline for batch processing of food import datasets using Hadoop ecosystem, Spark, and Superset.
 
 ---
 
-## 🗂 Arsitektur Sistem
+## 📌 Overview
 
-Sistem dibangun menggunakan **Apache Hadoop Stack**:
+This project builds a **Hadoop-based data platform** to analyze Indonesia's international food import data. It leverages **batch processing**, **Medallion architecture**, and a modern open-source stack for scalable data ingestion, transformation, and visualization.
 
-- **HDFS** – Penyimpanan terdistribusi untuk semua lapisan data
-- **Apache Spark** – Proses ETL dan analitik batch
-- **Apache Hive** – SQL engine untuk eksplorasi dan query analitik
-- **Apache Superset** – Dashboard interaktif
-- **Docker Compose** – Orkestrasi cluster lokal
-- **Airflow / Crontab** – Penjadwalan ingestion dan transformasi
+- 🌐 Dataset: UN Comtrade & FAOSTAT (food import data)
+- 🏢 Stack: Hadoop, Spark, Hive, Superset, Docker
+- 🤖 Goal: End-to-end pipeline from raw data to dashboard
+
+---
+
+## 💼 Team
+
+Developed by **Kelompok 13 – Institut Teknologi Sumatera (Prodi Sains Data)**
+- Rangga Adi Putra
+- Cyntia Kristina Sidauruk
+- Azizah Kusumah Putri
+- Farrel Julio Akbar
+
+---
+
+## 🛠️ System Architecture
 
 ### 🔄 Medallion Architecture
 
-| Layer  | Tujuan                                                                 | Format Data       | Tools              |
-|--------|------------------------------------------------------------------------|-------------------|--------------------|
-| Bronze | Menyimpan data mentah dari sumber eksternal                           | CSV / JSON        | HDFS               |
-| Silver | Data bersih & distandarisasi, siap analisis                           | Parquet / ORC     | Spark, Hive        |
-| Gold   | Data agregasi akhir, siap dianalisis atau divisualisasikan            | Parquet / ORC     | Hive, Superset     |
+| Layer  | Description                                     | Format           | Tools             |
+|--------|--------------------------------------------------|------------------|--------------------|
+| Bronze | Raw external data                               | CSV / JSON       | HDFS               |
+| Silver | Cleaned, structured data                        | Parquet / ORC    | Spark, Hive        |
+| Gold   | Aggregated, analytics-ready data                | Parquet / ORC    | Hive, Superset     |
+
+### 🏗️ Stack Components
+
+- **HDFS** – Distributed file storage
+- **Apache Spark** – ETL, transformation, MLlib
+- **Apache Hive** – SQL engine and table registry
+- **Apache Superset** – Dashboard visualization
+- **Docker Compose** – Local cluster orchestration
+- **Crontab / Airflow** – Batch job scheduling
 
 ---
 
-## 🧬 Dataset
+## 📈 Datasets
 
-Sumber: [UN Comtrade](https://comtrade.un.org/), [FAOSTAT](https://www.fao.org/faostat)
+- **UN Comtrade** – Global food trade data
+- **FAOSTAT** – Food agriculture stats (volume/value)
 
-Data mencakup:
-
-- Tahun transaksi (refYear)
-- Negara pelapor dan mitra dagang
-- Deskripsi dan kode komoditas (HS Code)
-- Nilai dan volume impor (qty, netWgt, cifvalue)
-- Estimasi dan metadata impor
+Key fields:
+- Year (refYear)
+- Country (reporter, partner)
+- Commodity code (HS Code)
+- Import value (cifvalue), quantity (qty), weight (netWgt)
+- Metadata & source flags
 
 ---
 
-## ⚙️ Pipeline Alur Data
+## 🔄 Data Pipeline
 
 ```
-1. Fetch CSV dari UN Comtrade (curl/API)
-2. Upload ke HDFS (Bronze Layer)
-3. Transformasi dan validasi (Spark - Silver Layer)
-4. Agregasi OLAP (Spark/Hive - Gold Layer)
-5. Registrasi tabel Hive
-6. Visualisasi dengan Apache Superset
+1. Fetch data via API / curl
+2. Store in HDFS (Bronze)
+3. Transform & clean via Spark (Silver)
+4. Aggregate via Hive (Gold)
+5. Register Hive tables
+6. Visualize via Superset dashboard
 ```
 
 ---
 
-## 🏗️ Implementasi Sistem
-
-### Struktur Folder
+## 📁 Folder Structure
 
 ```
 /opt/bigdata/
 ├── docker-compose.yml
 ├── data/
-│   ├── bronze/       # Raw CSV
-│   ├── silver/       # Cleaned data (Parquet)
-│   └── gold/         # Aggregated data
+│   ├── bronze/       # Raw CSVs
+│   ├── silver/       # Cleaned Parquet
+│   └── gold/         # Aggregated OLAP results
 ├── scripts/
-│   ├── ingest.sh     # Script pengambilan data
-│   └── etl_spark.py  # Script transformasi Spark
-└── logs/             # Log ETL
+│   ├── ingest.sh     # Data ingestion script
+│   └── etl_spark.py  # Spark ETL transformation
+└── logs/             # ETL logs
 ```
 
-### Teknologi Utama
+---
 
-| Komponen         | Fungsi                                 |
-|------------------|-----------------------------------------|
-| Docker + Compose | Virtualisasi cluster Hadoop             |
-| Hive Metastore   | Metadata tabel Hive                     |
-| Spark Submit     | Menjalankan job batch ETL               |
-| Superset         | Visualisasi data impor                  |
-| Crontab / Airflow| Penjadwalan batch job                   |
+## 🔧 Technologies Used
+
+| Component       | Function                            |
+|----------------|-------------------------------------|
+| Docker Compose | Virtual Hadoop cluster orchestration |
+| Hive Metastore | Table metadata registry              |
+| Spark Submit   | Run ETL batch jobs                   |
+| Superset       | Build interactive dashboards         |
+| Crontab        | Job automation                       |
 
 ---
 
-## 🔍 Fitur Utama
+## 🔍 Features
 
-- 🔄 Otomatisasi pipeline batch
-- 🧼 Data cleaning & transformasi format Parquet
-- 📊 Visualisasi interaktif melalui Superset
-- 🧠 Integrasi Spark MLlib untuk analisis prediktif
-- 🔎 SQL query melalui Hive
-
----
-
-## 🧪 Pengujian
-
-| Jenis Tes             | Tujuan                                                   |
-|------------------------|----------------------------------------------------------|
-| Unit Test             | Validasi skrip ETL per modul                              |
-| Integration Test      | Ingestion → HDFS → Spark → Hive                           |
-| Data Quality Test     | Duplikasi, nilai null, dan validasi skema                 |
-| Performance Test      | Waktu eksekusi batch ingestion & transformasi            |
-| End-to-End Test       | Alur ingestion sampai dashboard Superset                 |
+- ✅ Automated batch ingestion
+- ✅ Clean & efficient Parquet transformation
+- ✅ SQL-ready Hive tables
+- ✅ Interactive dashboard via Superset
+- ✅ ML-ready data for Spark MLlib
 
 ---
 
-## 📈 Analitik Lanjutan (MLlib)
+## 📅 Testing Strategy
 
-Model regresi menggunakan Spark MLlib digunakan untuk:
-
-- 🔮 Memprediksi volume impor berdasarkan tren historis
-- 🧾 Menilai fitur penting yang memengaruhi nilai impor
-
-Output prediksi disimpan di Hive/Gold Layer untuk visualisasi lanjutan.
-
----
-
-## 🚀 Cara Menjalankan (Local Deployment)
-
-1. **Install Docker Desktop + WSL2**
-2. Clone repositori ini:
-   ```bash
-   git clone https://github.com/sains-data/Analisis-Impor-Bahan-Pangan-dari-Global
-   cd Analisis-Impor-Bahan-Pangan-dari-Global
-   ```
-3. Jalankan cluster Hadoop lokal:
-   ```bash
-   docker-compose up -d
-   ```
-4. Eksekusi pipeline:
-   ```bash
-   bash scripts/ingest.sh
-   spark-submit scripts/etl_spark.py
-   ```
-5. Akses Superset di `http://localhost:8088` untuk visualisasi
+| Test Type           | Purpose                                |
+|---------------------|----------------------------------------|
+| Unit Test           | Validate ETL script functions           |
+| Integration Test    | Ingestion ➔ Spark ➔ Hive linkage         |
+| Data Quality Test   | Handle nulls, duplicates, schema check |
+| Performance Test    | Monitor batch execution times          |
+| End-to-End Test     | Verify from fetch to Superset view     |
 
 ---
 
-## 🧾 Lisensi
+## 🤖 Advanced Analytics (Optional MLlib)
 
-Proyek ini dikembangkan untuk keperluan akademik di Institut Teknologi Sumatera. Bebas digunakan untuk pembelajaran dan riset dengan mencantumkan kredit kepada tim pengembang.
+- Use **Spark MLlib regression** to predict future import volume
+- Feature engineering to analyze influential factors
+- Save prediction output to Hive Gold layer
 
 ---
 
-## 📚 Referensi
+## 🚀 Deployment Guide (Local)
+
+1. **Install Docker Desktop**
+2. Clone repository:
+```bash
+git clone https://github.com/sains-data/Analisis-Impor-Bahan-Pangan-dari-Global
+cd Analisis-Impor-Bahan-Pangan-dari-Global
+```
+3. Launch Hadoop stack:
+```bash
+docker-compose up -d
+```
+4. Run pipeline:
+```bash
+bash scripts/ingest.sh
+spark-submit scripts/etl_spark.py
+```
+5. Open Superset: `http://localhost:8088`
+
+---
+
+## 📄 License
+
+MIT License — Academic purpose (Institut Teknologi Sumatera)  
+Open for learning, with credit to original authors
+
+---
+
+## 📖 References
 
 1. [UN Comtrade](https://comtrade.un.org/)
 2. [FAOSTAT](https://www.fao.org/faostat)
